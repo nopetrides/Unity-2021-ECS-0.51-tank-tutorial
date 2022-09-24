@@ -90,6 +90,7 @@ public class MyEnemySpawner : MonoBehaviour
         dotsEntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         #region Unity Example
+        /*
         // Define the components that the entity will use
         var entityDescriptor = new RenderMeshDescription(
             enemyMesh, enemyMaterial, shadowCastingMode: ShadowCastingMode.Off, receiveShadows: false);
@@ -122,35 +123,8 @@ public class MyEnemySpawner : MonoBehaviour
         ecb.Dispose();
         // Destroy the template
         dotsEntityManager.DestroyEntity(myFirstEntity);
-        #endregion
-
-        // Dated? example
-        /*
-        EntityArchetype archetype = dotsEntityManager.CreateArchetype(
-            typeof(Translation),
-            typeof(Scale),
-            typeof(Rotation),
-            typeof(RenderMesh),
-            typeof(RenderBounds),
-            typeof(LocalToWorld), 
-            typeof(PerInstanceCullingTag),
-            typeof(WorldToLocal_Tag));
-
-        // Create the first entity
-
-        // Give it positional data
-        dotsEntityManager.AddComponentData(myFirstEntity, new Translation { Value = new float3(-3f,0.5f,5f)});
-
-        // Give it rotational data
-        dotsEntityManager.AddComponentData(myFirstEntity, new Rotation { Value = quaternion.EulerXYZ(new float3(0f,45f,0f)) });
-
-        // Add a mesh that is shared between all entities
-        dotsEntityManager.AddSharedComponentData(myFirstEntity, new RenderMesh
-        {
-            mesh = enemyMesh,
-            material = enemyMaterial
-        });
         */
+        #endregion
     }
 
     // Example Burst job that creates many entities

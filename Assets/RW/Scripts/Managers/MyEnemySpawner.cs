@@ -75,19 +75,10 @@ public class MyEnemySpawner : MonoBehaviour
     // DOTS
     private EntityManager dotsEntityManager;
 
-    // Components
-    [SerializeField]
-    private Mesh enemyMesh;
-
-    [SerializeField]
-    private Material enemyMaterial;
-
     [SerializeField]
     private GameObject enemyPrefab;
 
     private Entity enemyEntityFromPrefab;
-
-    public EntityCommandBuffer.ParallelWriter Ecb;
 
     private void Start()
     {

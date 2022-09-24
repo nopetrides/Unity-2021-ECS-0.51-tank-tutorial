@@ -49,9 +49,9 @@ namespace DroneSwarm
                 EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
                 // find all enemies that currently do not have the Lifetime ComponentData
-                Entities.WithAll<EnemyTag>().WithNone<LifetimeComponent>().ForEach((Entity enemy, ref Translation enemyPos) =>
+                Entities.WithAll<EnemyTag>().WithNone<MaxDistanceComp>().ForEach((Entity enemy, ref Translation enemyPos) =>
                 {
-                    FXManager.Instance.CreateExplosion(enemyPos.Value);
+                    FXSpawner.Instance.SpawnFX(enemyPos.Value);
                     PostUpdateCommands.DestroyEntity(enemy);
                 });
             }

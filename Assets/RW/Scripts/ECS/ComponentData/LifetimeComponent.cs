@@ -1,7 +1,7 @@
 using Unity.Entities;
 
 [GenerateAuthoringComponent]
-public struct LifetimeComponent : IComponentData
+public struct LifetimeComp : IComponentData
 {
-    public float allowedDistance;
+    public float timeAlive;
 }

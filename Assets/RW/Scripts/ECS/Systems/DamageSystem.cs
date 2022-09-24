@@ -19,8 +19,8 @@ public class DamageSystem : ComponentSystem
                 
                 if (math.distance(enemyPos.Value, playerPosition) <= impactDistance)
                 {
-                    FXManager.Instance.CreateExplosion(enemyPos.Value);
-                    FXManager.Instance.CreateExplosion(playerPosition);
+                    FXSpawner.Instance.SpawnFX(enemyPos.Value);
+                    FXSpawner.Instance.SpawnFX(playerPosition);
 
                     GameManager.EndGame();
                     PostUpdateCommands.DestroyEntity(enemy);
@@ -28,7 +28,7 @@ public class DamageSystem : ComponentSystem
 
                 float3 enemyPosition = enemyPos.Value;
 
-                Entities.WithAll<BulletTag>().ForEach((Entity bullet, ref Translation bulletPos, ref LifetimeComponent lifetime) => 
+                Entities.WithAll<BulletTag>().ForEach((Entity bullet, ref Translation bulletPos, ref MaxDistanceComp lifetime) => 
                 {
                     if (math.distance(bulletPos.Value, playerPosition) >= lifetime.allowedDistance)
                     {
@@ -36,7 +36,7 @@ public class DamageSystem : ComponentSystem
                     }
                     else if (math.distance(enemyPosition, bulletPos.Value) <= impactDistance)
                     {
-                        FXManager.Instance.CreateExplosion(enemyPosition);
+                        FXSpawner.Instance.SpawnFX(enemyPosition);
                         GameManager.AddScore(1);
 
                         PostUpdateCommands.DestroyEntity(enemy);

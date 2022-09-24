@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 5656527439497140407}
   - component: {fileID: 5658192792873287537}
   - component: {fileID: -7381007729103069076}
-  - component: {fileID: 3404518333505295142}
+  - component: {fileID: -5348056619016073633}
   m_Layer: 0
-  m_Name: SmallExplosion
+  m_Name: MyExplosion
   m_TagString: Explosion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4991,7 +4991,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3404518333505295142
+--- !u!114 &-5348056619016073633
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5000,10 +5000,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5495404896687960449}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b01581306dc0d145a6eaaa8eae6f2ea, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e1227aa6f4599b4a839dd40cdac98d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 4
+  timeAlive: 2
 --- !u!1 &5495586157774017883
 GameObject:
   m_ObjectHideFlags: 0

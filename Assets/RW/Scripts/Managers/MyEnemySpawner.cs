@@ -97,8 +97,8 @@ public class MyEnemySpawner : MonoBehaviour
 
         var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
         enemyEntityFromPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(enemyPrefab, settings);
-        dotsEntityManager.Instantiate(enemyEntityFromPrefab);
-
+        
+        SpawnWave();
 
         #region Unity Example
         /*
@@ -138,6 +138,8 @@ public class MyEnemySpawner : MonoBehaviour
         #endregion
     }
 
+    #region Unity Example Spawn
+    /*
     // Example Burst job that creates many entities
     [BurstCompatible]
     public struct SpawnJob : IJobParallelFor
@@ -160,11 +162,24 @@ public class MyEnemySpawner : MonoBehaviour
             return float4x4.Translate(new float3(index, 0, 0));
         }
     }
+    */
+    #endregion
 
     // spawns enemies in a ring around the player
     private void SpawnWave()
     {
+        NativeArray<Entity> enemyArray = new NativeArray<Entity>(spawnCount, Allocator.Temp);
 
+        for (int i = 0; i < enemyArray.Length; i++)
+        {
+            enemyArray[i] = dotsEntityManager.Instantiate(enemyEntityFromPrefab);
+
+            dotsEntityManager.SetComponentData(enemyArray[i], new Translation { Value = RandomPointOnCircle(spawnRadius)});
+            dotsEntityManager.SetComponentData(enemyArray[i], new MoveForwardComp { speed = Random.Range(minSpeed,maxSpeed) });
+        }
+
+        enemyArray.Dispose();
+        spawnCount += difficultyBonus;
     }
 
     // get a random point on a circle with given radius

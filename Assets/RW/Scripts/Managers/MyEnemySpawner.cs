@@ -97,8 +97,8 @@ public class MyEnemySpawner : MonoBehaviour
 
         var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
         enemyEntityFromPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(enemyPrefab, settings);
-        
-        SpawnWave();
+
+        StartSpawn();
 
         #region Unity Example
         /*

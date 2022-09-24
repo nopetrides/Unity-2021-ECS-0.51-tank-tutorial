@@ -21,44 +21,48 @@ public partial class DamageSystem : SystemBase
 
         public void Execute(
          [EntityInQueryIndex] int index,
-         in Translation translation, in Entity entity, in QuadrantTag tag, in EnemyTag enemy)
+         in Translation translation, in Entity entity, in QuadrantTag tag, in MaxDistanceComp maxDistance)
         {
             int hashMapKey = QuadrantSystem.GetPositionHashMapKey(translation.Value);
-            
+
             // entity, translation, tag = enemy
-
-            if (math.distance(translation.Value, playerPosition) <= collisionDistance)
+            if (tag.unitType == QuadrantTag.QuadrantUnitType.Enemy)
             {
-                GameManager.EndGame();
-
-                dotsEntityManager.AddComponent(index, entity, typeof(DestroyedTag));
-            }
-
-            else if (quadrantMultiHashMap.TryGetFirstValue(hashMapKey, out QuadrantData quadrant, out NativeParallelMultiHashMapIterator<int> iterator))
-            {
-                do
+                if (math.distance(translation.Value, playerPosition) <= collisionDistance)
                 {
-                    // entity, translation, tag = enemy
-                    // quadrant = bullet (ignore other enemies)
-                    if (quadrant.quadrantTag.unitType == QuadrantTag.QuadrantUnitType.Bullet)
+                    GameManager.EndGame();
+
+                    dotsEntityManager.AddComponent(index, entity, typeof(DestroyedTag));
+                }
+                else if (quadrantMultiHashMap.TryGetFirstValue(hashMapKey, out QuadrantData quadrant, out NativeParallelMultiHashMapIterator<int> iterator))
+                {
+                    do
                     {
-                        // Did the bullet go too far?
-                        if (math.distance(playerPosition, quadrant.position) >= quadrant.allowedDistance)
+                        // entity, translation, tag = enemy
+                        // quadrant = bullet (ignore other enemies)
+                        if (quadrant.quadrantTag.unitType == QuadrantTag.QuadrantUnitType.Bullet)
                         {
-                            dotsEntityManager.AddComponent(index, quadrant.entity, typeof(CleanupTag));
-                        }
-                        // Did the bullet collide with this enemy?
-                        else if (math.distance(translation.Value, quadrant.position) <= collisionDistance)
-                        {
-                            // TODO change to OnDamaged
-                            GameManager.AddScore(1);
+                            // Did the bullet collide with this enemy?
+                            if (math.distance(translation.Value, quadrant.position) <= collisionDistance)
+                            {
+                                // TODO change to OnDamaged
+                                GameManager.AddScore(1);
 
-                            dotsEntityManager.AddComponent(index, entity, typeof(DestroyedTag));
-                            dotsEntityManager.AddComponent(index, quadrant.entity, typeof(CleanupTag));
+                                dotsEntityManager.AddComponent(index, entity, typeof(DestroyedTag));
+                                dotsEntityManager.AddComponent(index, quadrant.entity, typeof(CleanupTag));
+                            }
                         }
-                    }
 
-                } while (quadrantMultiHashMap.TryGetNextValue(out quadrant, ref iterator));
+                    } while (quadrantMultiHashMap.TryGetNextValue(out quadrant, ref iterator));
+                }
+
+            }
+            else
+            {
+                if (math.distance(playerPosition, translation.Value) >= maxDistance.allowedDistance)
+                {
+                    dotsEntityManager.AddComponent(index, entity, typeof(CleanupTag));
+                }
             }
         }
     }

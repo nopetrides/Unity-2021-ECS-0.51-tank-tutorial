@@ -1,6 +1,6 @@
 using Unity.Entities;
 [GenerateAuthoringComponent]
-public class CleanupTag : IComponentData
+public struct CleanupTag : IComponentData
 {
 
 }

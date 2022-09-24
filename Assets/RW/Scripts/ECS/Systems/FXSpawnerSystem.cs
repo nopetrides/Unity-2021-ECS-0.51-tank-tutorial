@@ -4,29 +4,24 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+[BurstCompile]
 public partial class FXSpawnerSystem : SystemBase
 {
     private Entity explosionEntityFromPrefab;
-    public static GameObject prefab;
+    private Entity explosionEntitySpawner;
+
+    protected override void OnStartRunning()
+    {
+        explosionEntityFromPrefab = GetSingleton<FXComponent>().Value;
+    }
+
+    protected override void OnCreate()
+    {
+        endSimulationEntityCommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+    }
 
     // DOTS
     private EndSimulationEntityCommandBufferSystem endSimulationEntityCommandBufferSystem;
-
-    public static void SetPrefab(GameObject p)
-    {
-        prefab = p;
-    }
-
-    protected void CheckReady()
-    {
-        if (prefab != null)
-        {
-            endSimulationEntityCommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-
-            var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
-            explosionEntityFromPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
-        }
-    }
 
     [BurstCompile]
     private partial struct SpawnDestructionFX : IJobEntity
@@ -47,22 +42,15 @@ public partial class FXSpawnerSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        if (endSimulationEntityCommandBufferSystem == null)
-        {
-            CheckReady();
-        }
-        else
-        {
-            var ecb = endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
+        var ecb = endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
-            SpawnDestructionFX setQuadrantDataHashMapJob = new SpawnDestructionFX
-            {
-                dotsEntityManager = ecb,
-                prefabEntity = explosionEntityFromPrefab
-            };
-            setQuadrantDataHashMapJob.Run();
+        SpawnDestructionFX setQuadrantDataHashMapJob = new SpawnDestructionFX
+        {
+            dotsEntityManager = ecb,
+            prefabEntity = explosionEntityFromPrefab
+        };
+        setQuadrantDataHashMapJob.Run();
 
-            endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(this.Dependency);
-        }
+        endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(this.Dependency);
     }
 }

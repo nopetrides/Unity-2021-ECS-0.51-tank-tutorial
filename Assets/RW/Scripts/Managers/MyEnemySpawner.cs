@@ -34,11 +34,13 @@ using Random = UnityEngine.Random;
 
 // DOTS
 using Unity.Entities;
+using Unity.Jobs;
+using Unity.Rendering;
+using UnityEngine.Rendering;
 
 // Components
 using Unity.Transforms;
-using Unity.Rendering;
-
+using Unity.Collections;
 
 /// <summary>
 /// spawns a swarm of enemy entities offscreen, encircling the player
@@ -80,22 +82,98 @@ public class MyEnemySpawner : MonoBehaviour
     [SerializeField]
     private Material enemyMaterial;
 
+    public EntityCommandBuffer.ParallelWriter Ecb;
 
     private void Start()
     {
         // Get the World
         dotsEntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
+        #region Unity Example
         // Define the components that the entity will use
+        var entityDescriptor = new RenderMeshDescription(
+            enemyMesh, enemyMaterial, shadowCastingMode: ShadowCastingMode.Off, receiveShadows: false);
+
+        // Create a template entity
+        Entity myFirstEntity = dotsEntityManager.CreateEntity();
+        
+        // Add components to the renderer
+        RenderMeshUtility.AddComponents(
+            myFirstEntity,
+            dotsEntityManager,
+            entityDescriptor);
+        // Add component data to the manager
+        dotsEntityManager.AddComponentData(myFirstEntity, new LocalToWorld());
+        // Setup a command buffer
+        EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.TempJob);
+        // Create a Job
+        var spawnJob = new SpawnJob
+        {
+            Prototype = myFirstEntity,
+            Ecb = ecb.AsParallelWriter(),
+            EntityCount = 1,
+        };
+        // Schedule the job
+        var spawnHandle = spawnJob.Schedule(1, 128);
+        // Execute the job
+        spawnHandle.Complete();
+        // Cleanup
+        ecb.Playback(dotsEntityManager);
+        ecb.Dispose();
+        // Destroy the template
+        dotsEntityManager.DestroyEntity(myFirstEntity);
+        #endregion
+
+        // Dated? example
+        /*
         EntityArchetype archetype = dotsEntityManager.CreateArchetype(
             typeof(Translation),
+            typeof(Scale),
             typeof(Rotation),
             typeof(RenderMesh),
             typeof(RenderBounds),
-            typeof(LocalToWorld));
+            typeof(LocalToWorld), 
+            typeof(PerInstanceCullingTag),
+            typeof(WorldToLocal_Tag));
 
         // Create the first entity
-        Entity entity = dotsEntityManager.CreateEntity();
+
+        // Give it positional data
+        dotsEntityManager.AddComponentData(myFirstEntity, new Translation { Value = new float3(-3f,0.5f,5f)});
+
+        // Give it rotational data
+        dotsEntityManager.AddComponentData(myFirstEntity, new Rotation { Value = quaternion.EulerXYZ(new float3(0f,45f,0f)) });
+
+        // Add a mesh that is shared between all entities
+        dotsEntityManager.AddSharedComponentData(myFirstEntity, new RenderMesh
+        {
+            mesh = enemyMesh,
+            material = enemyMaterial
+        });
+        */
+    }
+
+    // Example Burst job that creates many entities
+    [BurstCompatible]
+    public struct SpawnJob : IJobParallelFor
+    {
+        public Entity Prototype;
+        public int EntityCount;
+        public EntityCommandBuffer.ParallelWriter Ecb;
+
+        public void Execute(int index)
+        {
+            // Clone the Prototype entity to create a new entity.
+            var e = Ecb.Instantiate(index, Prototype);
+            // Prototype has all correct components up front, can use SetComponent to
+            // set values unique to the newly created entity, such as the transform.
+            Ecb.SetComponent(index, e, new LocalToWorld { Value = ComputeTransform(index) });
+        }
+
+        public float4x4 ComputeTransform(int index)
+        {
+            return float4x4.Translate(new float3(index, 0, 0));
+        }
     }
 
     // spawns enemies in a ring around the player

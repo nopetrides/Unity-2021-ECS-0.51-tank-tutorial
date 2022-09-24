@@ -12,6 +12,7 @@ public partial class DamageSystem : SystemBase
     private EndSimulationEntityCommandBufferSystem endSimulationEntityCommandBufferSystem;
 
     [BurstCompile]
+    [WithNone(typeof(CleanupTag), typeof(DestroyedTag))]
     private partial struct CheckForCollisionsJob : IJobEntity
     {
         public NativeParallelMultiHashMap<int, QuadrantData> quadrantMultiHashMap;
@@ -50,6 +51,7 @@ public partial class DamageSystem : SystemBase
 
                                 dotsEntityManager.AddComponent(index, entity, typeof(DestroyedTag));
                                 dotsEntityManager.AddComponent(index, quadrant.entity, typeof(CleanupTag));
+                                break;
                             }
                         }
 

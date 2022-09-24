@@ -1,6 +1,8 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Transforms;
+using UnityEngine.Rendering;
+
 [BurstCompile]
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public partial class CleanupSystem : SystemBase
@@ -14,34 +16,19 @@ public partial class CleanupSystem : SystemBase
     [BurstCompile]
     private partial struct CleanupEntities : IJobEntity
     {
-        public EntityCommandBuffer dotsEntityManager;
+        public EntityCommandBuffer.ParallelWriter CommandBuffer;
 
         public void Execute(
          [EntityInQueryIndex] int index,
          in Translation translation, in Entity entity, in CleanupTag destroyed)
         {
-            dotsEntityManager.DestroyEntity(entity);
+            CommandBuffer.DestroyEntity(index, entity);
         }
     }
 
     protected override void OnUpdate()
     {
         var ecb = endInitializationEntityCommandBufferSystem.CreateCommandBuffer();
-        // check if the game is over
-        // default EntityManager
-        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
-        CleanupEntities CleanupEntitiesJob = new CleanupEntities
-        {
-            dotsEntityManager = ecb,
-        };
-        CleanupEntitiesJob.Run();
-
-        /*// find all enemies that currently do not have the Lifetime ComponentData
-        Entities.WithAll<CleanupTag>().ForEach((Entity entity, ref Translation pos) =>
-        {
-            PostUpdateCommands.DestroyEntity(entity);
-        });
-        */
+        ecb.DestroyEntitiesForEntityQuery(GetEntityQuery(typeof(CleanupTag)));
     }
 }

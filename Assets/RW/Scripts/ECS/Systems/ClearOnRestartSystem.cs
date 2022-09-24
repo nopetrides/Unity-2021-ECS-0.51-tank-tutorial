@@ -28,6 +28,7 @@
  * THE SOFTWARE.
  */
 
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Transforms;
 
@@ -37,24 +38,32 @@ namespace DroneSwarm
     /// Assigns Lifetime components to any enemies on game over,
     /// removing any leftover drones when the scene restarts.
     /// </summary>
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     public class ClearOnRestartSystem : ComponentSystem
     {
+        private EndInitializationEntityCommandBufferSystem endInitializationEntityCommandBufferSystem;
+
+        protected override void OnCreate()
+        {
+            endInitializationEntityCommandBufferSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
+        }
 
         protected override void OnUpdate()
         {
+            var ecb = endInitializationEntityCommandBufferSystem.CreateCommandBuffer();
             // check if the game is over
-            if (GameManager.IsGameOver())
-            {
-                // default EntityManager
-                EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+            // default EntityManager
+            EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-                // find all enemies that currently do not have the Lifetime ComponentData
-                Entities.WithAll<EnemyTag>().WithNone<MaxDistanceComp>().ForEach((Entity enemy, ref Translation enemyPos) =>
-                {
-                    FXSpawner.Instance.SpawnFX(enemyPos.Value);
-                    PostUpdateCommands.DestroyEntity(enemy);
-                });
-            }
+            ecb.DestroyEntitiesForEntityQuery(EntityManager.CreateEntityQuery(typeof(CleanupTag)));
+
+            /*
+            // find all enemies that currently do not have the Lifetime ComponentData
+            Entities.WithAll<CleanupTag>().ForEach((Entity entity, ref Translation pos) =>
+            {
+                PostUpdateCommands.DestroyEntity(entity);
+            });
+            */
         }
     }
 }

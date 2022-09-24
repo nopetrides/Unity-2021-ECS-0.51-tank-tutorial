@@ -33,6 +33,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor;
 
 
 // used to track game states
@@ -130,6 +131,10 @@ public class GameManager : MonoBehaviour
         if (gameState == GameState.Starting || gameState == GameState.Playing)
         {
             UpdateTime();
+            if (Instance.scoreText != null)
+            {
+                Instance.scoreText.text = Instance.score.ToString();
+            }
         }
     }
 
@@ -167,6 +172,12 @@ public class GameManager : MonoBehaviour
         return (Instance.player != null) ? GameManager.Instance.player.position : Vector3.zero;
     }
 
+    // Which quadrant is the player in?
+    public static int GetPlayerQuadrant()
+    {
+        return QuadrantSystem.GetPositionHashMapKey(GetPlayerPosition());
+    }
+
     // end the game (player has died)
     public static void EndGame()
     {
@@ -194,11 +205,6 @@ public class GameManager : MonoBehaviour
     public static void AddScore(int scoreValue)
     {
         Instance.score += scoreValue;
-
-        if (Instance.scoreText != null)
-        {
-            Instance.scoreText.text = Instance.score.ToString();
-        }
     }
 
     // display the time text

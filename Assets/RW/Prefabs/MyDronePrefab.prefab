@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 993742691101799933}
   - component: {fileID: -2135621110696004816}
   - component: {fileID: 4010338534298146439}
+  - component: {fileID: 8131591499649884210}
+  - component: {fileID: 2237588733723961422}
   m_Layer: 0
   m_Name: MyDronePrefab
   m_TagString: Untagged
@@ -124,3 +126,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 651cf3c49e1f9d8489a2e7dd6b49aa59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8131591499649884210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672307886139396931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec7322984ee3e544bcac84679468e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unityType: 0
+--- !u!114 &2237588733723961422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672307886139396931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f997610a17a74da4089e19c0b15486f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowedDistance: 60

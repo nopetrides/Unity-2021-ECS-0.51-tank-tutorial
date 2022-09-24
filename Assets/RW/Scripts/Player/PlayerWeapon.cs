@@ -95,6 +95,7 @@ public class PlayerWeapon : MonoBehaviour
         entityManager.SetComponentData(bullet, new Translation { Value = muzzleTransform.position });
         entityManager.SetComponentData(bullet, new Rotation { Value = muzzleTransform.rotation });
 
+        entityManager.SetComponentData(bullet, new QuadrantTag { unitType = QuadrantTag.QuadrantUnitType.Bullet });
         // plays one-shot sound (pew pew pew!)
         soundFXSource?.Play();
     }

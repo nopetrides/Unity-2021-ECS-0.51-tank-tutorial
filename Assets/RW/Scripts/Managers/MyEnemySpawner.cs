@@ -169,6 +169,7 @@ public class MyEnemySpawner : MonoBehaviour
 
             dotsEntityManager.SetComponentData(enemyArray[i], new Translation { Value = RandomPointOutsideViewport(spawnRadius) });
             dotsEntityManager.SetComponentData(enemyArray[i], new MoveForwardComp { speed = Random.Range(minSpeed, maxSpeed) });
+            dotsEntityManager.SetComponentData(enemyArray[i], new QuadrantTag { unitType = QuadrantTag.QuadrantUnitType.Enemy });
         }
 
         enemyArray.Dispose();
@@ -177,11 +178,9 @@ public class MyEnemySpawner : MonoBehaviour
     // get a random point on a circle with given radius
     private float3 RandomPointOutsideViewport(float radius)
     {
-        var frustumDistance = 2.0f * Camera.main.transform.position.y+1 * Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        var frustumDistance = 2.0f * (Camera.main.transform.position.y+5) * Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad);
         var frustumWidth = frustumDistance * Camera.main.aspect;
         var frustumHeight = frustumWidth / Camera.main.aspect;
-
-        
 
         var pos = PointOnBounds(
             new Bounds(Vector3.zero, new Vector3(frustumWidth, frustumHeight, 0)), 

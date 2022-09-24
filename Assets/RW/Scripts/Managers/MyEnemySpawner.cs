@@ -41,6 +41,7 @@ using UnityEngine.Rendering;
 // Components
 using Unity.Transforms;
 using Unity.Collections;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 /// <summary>
 /// spawns a swarm of enemy entities offscreen, encircling the player
@@ -166,7 +167,7 @@ public class MyEnemySpawner : MonoBehaviour
         {
             enemyArray[i] = dotsEntityManager.Instantiate(enemyEntityFromPrefab);
 
-            dotsEntityManager.SetComponentData(enemyArray[i], new Translation { Value = RandomPointOnCircle(spawnRadius) });
+            dotsEntityManager.SetComponentData(enemyArray[i], new Translation { Value = RandomPointOutsideViewport(spawnRadius) });
             dotsEntityManager.SetComponentData(enemyArray[i], new MoveForwardComp { speed = Random.Range(minSpeed, maxSpeed) });
         }
 
@@ -174,12 +175,36 @@ public class MyEnemySpawner : MonoBehaviour
     }
 
     // get a random point on a circle with given radius
-    private float3 RandomPointOnCircle(float radius)
+    private float3 RandomPointOutsideViewport(float radius)
     {
-        Vector2 randomPoint = Random.insideUnitCircle.normalized * radius;
+        var frustumDistance = 2.0f * Camera.main.transform.position.y+1 * Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        var frustumWidth = frustumDistance * Camera.main.aspect;
+        var frustumHeight = frustumWidth / Camera.main.aspect;
+
+        
+
+        var pos = PointOnBounds(
+            new Bounds(Vector3.zero, new Vector3(frustumWidth, frustumHeight, 0)), 
+            new Vector2(Random.value, Random.value));
 
         // return random point on circle, centered around the player position
-        return new float3(randomPoint.x, 0.5f, randomPoint.y) + (float3)GameManager.GetPlayerPosition();
+        return new float3(pos.x, 0.5f, pos.y) + (float3)GameManager.GetPlayerPosition();
+    }
+
+    public static Vector2 PointOnBounds(Bounds bounds, Vector2 aDirection)
+    {
+        aDirection.Normalize();
+        var e = bounds.extents;
+        var v = aDirection;
+        float y = e.x * v.y / v.x;
+        if (Mathf.Abs(y) < e.y)
+            return new Vector2(e.x, y);
+        return new Vector2(e.y * v.x / v.y, e.y);
+    }
+    public static Vector2 PointOnBounds(Bounds bounds, float aAngle)
+    {
+        float a = aAngle * Mathf.Deg2Rad;
+        return PointOnBounds(bounds, new Vector2(Mathf.Cos(a), Mathf.Sin(a)));
     }
 
     // signal from GameManager to begin spawning
@@ -218,5 +243,10 @@ public class MyEnemySpawner : MonoBehaviour
         spawnCount += difficultyBonus;
 
         waveSpawnTimer = 0;
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Gizmos.DrawSphere(GameManager.GetPlayerPosition(), spawnRadius);
     }
 }

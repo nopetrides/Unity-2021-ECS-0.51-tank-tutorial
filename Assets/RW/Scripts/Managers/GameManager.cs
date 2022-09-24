@@ -106,7 +106,6 @@ public class GameManager : MonoBehaviour
     {
         timeElapsed = 0f;
 
-        PlayerManager.EnablePlayer(true);
         screenFader?.CrossFadeAlpha(0f, delay, true);
 
         yield return new WaitForSeconds(delay);
@@ -186,7 +185,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        PlayerManager.EnablePlayer(false);
         Instance.gameState = GameState.Over;
     }
 

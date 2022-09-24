@@ -184,19 +184,21 @@ public class MyEnemySpawner : MonoBehaviour
 
         var pos = PointOnBounds(
             new Bounds(Vector3.zero, new Vector3(frustumWidth, frustumHeight, 0)), 
-            new Vector2(Random.value, Random.value));
-
+            new Vector2(Random.Range(-1f,1f), Random.Range(-1f, 1f)));
+        Random.Range(0, -1);
+        Random.Range(0, -1);
         // return random point on circle, centered around the player position
-        return new float3(pos.x, 0.5f, pos.y) + (float3)GameManager.GetPlayerPosition();
+        return new float3(pos.x* (Random.Range(0, 2) * 2 - 1),
+            0.5f, 
+            pos.y* (Random.Range(0, 2) * 2 - 1)) + (float3)GameManager.GetPlayerPosition();
     }
 
     public static Vector2 PointOnBounds(Bounds bounds, Vector2 aDirection)
     {
-        aDirection.Normalize();
         var e = bounds.extents;
         var v = aDirection;
         float y = e.x * v.y / v.x;
-        if (Mathf.Abs(y) < e.y)
+        if (y < e.y)
             return new Vector2(e.x, y);
         return new Vector2(e.y * v.x / v.y, e.y);
     }

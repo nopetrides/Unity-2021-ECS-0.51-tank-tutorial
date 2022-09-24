@@ -50,7 +50,6 @@ public partial class QuadrantSystem : SystemBase
     }
 
     [BurstCompile]
-    [WithNone(typeof(CleanupTag), typeof(DestroyedTag))]
     private partial struct SetQuadrantDataHashMapJob : IJobEntity
     {
         public NativeParallelMultiHashMap<int, QuadrantData> quadrantMultiHashMapJob;

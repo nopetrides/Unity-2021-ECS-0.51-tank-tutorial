@@ -96,8 +96,6 @@ public class GameManagerNonECS : MonoBehaviour
     private IEnumerator StartGameRoutine()
     {
         timeElapsed = 0f;
-
-        PlayerManager.EnablePlayer(true);
         screenFader?.CrossFadeAlpha(0f, delay, true);
 
 
@@ -153,8 +151,6 @@ public class GameManagerNonECS : MonoBehaviour
         {
             return;
         }
-
-        PlayerManager.EnablePlayer(false);
         Instance.gameState = GameState.Over;
     }
 

@@ -52,7 +52,6 @@ public class PlayerManager : MonoBehaviour
         playerMover = GetComponent<PlayerMover>();
         playerInput = GetComponent<PlayerInput>();
         playerWeapon = GetComponent<PlayerWeapon>();
-        EnablePlayer(true);
     }
 
     private void Update()
@@ -68,7 +67,6 @@ public class PlayerManager : MonoBehaviour
         // hide the player if destroyed
         if (GameManager.IsGameOver())
         {
-            EnablePlayer(false);
             return;
         }
 
@@ -80,16 +78,6 @@ public class PlayerManager : MonoBehaviour
 
         // aim the turret to the mouse position
         playerMover.AimAtMousePosition(sceneCamera);
-    }
-
-    // toggle all GameObjects associated with the Player tag
-    public static void EnablePlayer(bool state)
-    {
-        GameObject[] allPlayerObjects = GameObject.FindGameObjectsWithTag(playerTagName);
-        foreach (GameObject go in allPlayerObjects)
-        {
-            go.SetActive(state);
-        }
     }
 
 }

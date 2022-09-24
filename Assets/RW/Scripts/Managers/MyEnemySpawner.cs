@@ -82,12 +82,23 @@ public class MyEnemySpawner : MonoBehaviour
     [SerializeField]
     private Material enemyMaterial;
 
+    [SerializeField]
+    private GameObject enemyPrefab;
+
+    private Entity enemyEntityFromPrefab;
+
     public EntityCommandBuffer.ParallelWriter Ecb;
 
     private void Start()
     {
         // Get the World
         dotsEntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+
+
+        var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+        enemyEntityFromPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(enemyPrefab, settings);
+        dotsEntityManager.Instantiate(enemyEntityFromPrefab);
+
 
         #region Unity Example
         /*

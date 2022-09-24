@@ -1767,12 +1767,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b462390ab85b2574e9b73d0ef914bf88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCount: 10
-  spawnInterval: 5
+  spawnCount: 100
+  spawnInterval: 2
   spawnRadius: 50
   difficultyBonus: 1
-  minSpeed: 1
-  maxSpeed: 1
+  minSpeed: 4
+  maxSpeed: 5
   enemyPrefab: {fileID: 8672307886139396931, guid: 6ae55f07e32ac7346afdfbfd130044b9,
     type: 3}
 --- !u!1 &2105232528
@@ -2084,7 +2084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c747001144657cb4998e1d4c74826795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rateOfFire: 1
+  rateOfFire: 0.04
   muzzleTransform: {fileID: 22721492}
   bulletPrefab: {fileID: 1218724716591446, guid: ae460383dfebe1946a68dff322a21686,
     type: 3}

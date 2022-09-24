@@ -34,8 +34,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-
-
 /// <summary>
 /// Manages the demo game.
 /// </summary>

@@ -31,7 +31,7 @@ public partial class DamageSystem : SystemBase
             {
                 if (math.distance(translation.Value, playerPosition) <= collisionDistance)
                 {
-                    GameManager.EndGame();
+                    //GameManager.EndGame();
 
                     dotsEntityManager.AddComponent(index, entity, typeof(DestroyedTag));
                 }
@@ -50,7 +50,7 @@ public partial class DamageSystem : SystemBase
                                 GameManager.AddScore(1);
 
                                 dotsEntityManager.AddComponent(index, entity, typeof(DestroyedTag));
-                                dotsEntityManager.AddComponent(index, quadrant.entity, typeof(CleanupTag));
+                                //dotsEntityManager.AddComponent(index, quadrant.entity, typeof(CleanupTag));
                                 break;
                             }
                         }

@@ -42,6 +42,10 @@ using UnityEngine.Rendering;
 using Unity.Transforms;
 using Unity.Collections;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+using static UnityEngine.EventSystems.EventTrigger;
+using UnityEngine.UIElements;
+using System;
+using System.Threading;
 
 /// <summary>
 /// spawns a swarm of enemy entities offscreen, encircling the player
@@ -178,19 +182,32 @@ public class MyEnemySpawner : MonoBehaviour
     // get a random point on a circle with given radius
     private float3 RandomPointOutsideViewport(float radius)
     {
+        var playerPos = GameManager.GetPlayerPosition();
         var frustumDistance = 2.0f * (Camera.main.transform.position.y+5) * Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad);
         var frustumWidth = frustumDistance * Camera.main.aspect;
         var frustumHeight = frustumWidth / Camera.main.aspect;
 
-        var pos = PointOnBounds(
+        var positionOnBounds = PointOnBounds(
             new Bounds(Vector3.zero, new Vector3(frustumWidth, frustumHeight, 0)), 
             new Vector2(Random.Range(-1f,1f), Random.Range(-1f, 1f)));
-        Random.Range(0, -1);
-        Random.Range(0, -1);
-        // return random point on circle, centered around the player position
-        return new float3(pos.x* (Random.Range(0, 2) * 2 - 1),
-            0.5f, 
-            pos.y* (Random.Range(0, 2) * 2 - 1)) + (float3)GameManager.GetPlayerPosition();
+
+        var circlePos = RandomPointOnCircle(radius, playerPos);
+
+
+        if (math.distance(new Vector3(positionOnBounds.x, 0, positionOnBounds.y), playerPos) < math.distance(circlePos, playerPos))
+        {
+            Random.Range(0, -1);
+            Random.Range(0, -1);
+            // return random point on circle, centered around the player position
+            return new float3(positionOnBounds.x * (Random.Range(0, 2) * 2 - 1),
+                0.5f,
+                positionOnBounds.y * (Random.Range(0, 2) * 2 - 1)) + (float3)playerPos;
+        }
+        else
+        {
+            // return random point on circle, centered around the player position
+            return new float3(circlePos.x, 0.5f, circlePos.z);
+        }
     }
 
     public static Vector2 PointOnBounds(Bounds bounds, Vector2 aDirection)
@@ -206,6 +223,16 @@ public class MyEnemySpawner : MonoBehaviour
     {
         float a = aAngle * Mathf.Deg2Rad;
         return PointOnBounds(bounds, new Vector2(Mathf.Cos(a), Mathf.Sin(a)));
+    }
+
+    // get a random point on a circle with given radius
+    private float3 RandomPointOnCircle(float radius, float3 playerPos)
+    {
+        var angle = Random.Range(0, 360);
+        
+        var randomPoint = Random.onUnitSphere * radius;
+        // return random point on circle, centered around the player position
+        return new float3 (playerPos.x + radius * math.cos(angle), 0, playerPos.z + radius * math.sin(angle));
     }
 
     // signal from GameManager to begin spawning

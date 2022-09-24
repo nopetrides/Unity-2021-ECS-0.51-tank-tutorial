@@ -1768,7 +1768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnCount: 10
-  spawnInterval: 1
+  spawnInterval: 5
   spawnRadius: 50
   difficultyBonus: 1
   minSpeed: 1

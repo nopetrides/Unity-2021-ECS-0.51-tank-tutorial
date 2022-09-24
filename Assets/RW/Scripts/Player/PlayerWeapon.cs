@@ -61,9 +61,11 @@ public class PlayerWeapon : MonoBehaviour
     // timer until weapon and shoot again
     private float shotTimer;
 
+    /*
     // is the fire button held down?
     private bool isFireButtonDown;
     public bool IsFireButtonDown { get { return isFireButtonDown; } set { isFireButtonDown = value; } }
+    */
 
     protected virtual void Start()
     {
@@ -107,7 +109,7 @@ public class PlayerWeapon : MonoBehaviour
 
         // count up to the next time we can shoot
         shotTimer += Time.deltaTime;
-        if (shotTimer >= rateOfFire && isFireButtonDown)
+        if (shotTimer >= rateOfFire)
         {
             // fire and reset the timer
             FireBullet();

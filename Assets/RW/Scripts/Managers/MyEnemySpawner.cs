@@ -67,7 +67,8 @@ public class MyEnemySpawner : MonoBehaviour
     [SerializeField] float maxSpeed = 12f;
 
     // counter
-    private float spawnTimer;
+    private float waveSpawnTimer;
+    private float spawnAccumulator;
 
     // flag from GameManager to enable spawning
     private bool canSpawn;
@@ -156,21 +157,20 @@ public class MyEnemySpawner : MonoBehaviour
     */
     #endregion
 
-    // spawns enemies in a ring around the player
-    private void SpawnWave()
+
+    private void SpawnWaveFraction(int enemiesToSpawn)
     {
-        NativeArray<Entity> enemyArray = new NativeArray<Entity>(spawnCount, Allocator.Temp);
+        NativeArray<Entity> enemyArray = new NativeArray<Entity>(enemiesToSpawn, Allocator.Temp);
 
         for (int i = 0; i < enemyArray.Length; i++)
         {
             enemyArray[i] = dotsEntityManager.Instantiate(enemyEntityFromPrefab);
 
-            dotsEntityManager.SetComponentData(enemyArray[i], new Translation { Value = RandomPointOnCircle(spawnRadius)});
-            dotsEntityManager.SetComponentData(enemyArray[i], new MoveForwardComp { speed = Random.Range(minSpeed,maxSpeed) });
+            dotsEntityManager.SetComponentData(enemyArray[i], new Translation { Value = RandomPointOnCircle(spawnRadius) });
+            dotsEntityManager.SetComponentData(enemyArray[i], new MoveForwardComp { speed = Random.Range(minSpeed, maxSpeed) });
         }
 
         enemyArray.Dispose();
-        spawnCount += difficultyBonus;
     }
 
     // get a random point on a circle with given radius
@@ -197,13 +197,26 @@ public class MyEnemySpawner : MonoBehaviour
         }
 
         // count up until next spawn
-        spawnTimer += Time.deltaTime;
+        waveSpawnTimer += Time.deltaTime;
+        spawnAccumulator += (Time.deltaTime / spawnInterval) * spawnCount;
+        if (spawnAccumulator > 1)
+        {
+            SpawnWaveFraction(Mathf.FloorToInt(spawnAccumulator));
+            spawnAccumulator = 0;
+        }
 
         // spawn and reset timer
-        if (spawnTimer > spawnInterval)
+        if (waveSpawnTimer > spawnInterval)
         {
-            SpawnWave();
-            spawnTimer = 0;
+            StartSpawnNextWave();
         }
+    }
+
+    // reset the spawn wave
+    private void StartSpawnNextWave()
+    {
+        spawnCount += difficultyBonus;
+
+        waveSpawnTimer = 0;
     }
 }

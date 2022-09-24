@@ -32,10 +32,10 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    public bool IsFiring => Input.GetButton("Fire1");
+    //public bool IsFiring => Input.GetButton("Fire1");
 
     // return input vector in camera space
-    public Vector3 GetCameraSpaceInputDirection(Camera cam)
+    public Vector3 GetInputDirection()
     {
         // "classic" Input
         float h = Input.GetAxis("Horizontal");
@@ -44,6 +44,8 @@ public class PlayerInput : MonoBehaviour
         // xz-vector from input values
         Vector3 inputDirection = new Vector3(h, 0, v);
 
+        return inputDirection;
+        /*
         if (cam == null)
         {
             return inputDirection;
@@ -54,6 +56,7 @@ public class PlayerInput : MonoBehaviour
         Vector3 cameraForward = cam.transform.forward;
 
         return cameraRight * inputDirection.x + cameraForward * inputDirection.z;
+        */
     }
 
 

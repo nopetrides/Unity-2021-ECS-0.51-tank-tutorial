@@ -15,6 +15,8 @@ public class FXSpawner : MonoBehaviour
 
     public static FXSpawner Instance;
 
+    [SerializeField] private AudioSource sfx;
+
     private void Start()
     {
         if (Instance != null)
@@ -27,7 +29,6 @@ public class FXSpawner : MonoBehaviour
         // Get the World
         dotsEntityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-
         var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
         explosionEntityFromPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(explosionPrefab, settings);
     }
@@ -37,6 +38,8 @@ public class FXSpawner : MonoBehaviour
         Entity fx = dotsEntityManager.Instantiate(explosionEntityFromPrefab);
 
         dotsEntityManager.SetComponentData(fx, new Translation { Value = location });
+
+        sfx.Play();
     }
 }
 

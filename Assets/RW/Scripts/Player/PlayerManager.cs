@@ -61,9 +61,6 @@ public class PlayerManager : MonoBehaviour
         {
             return;
         }
-
-        playerWeapon.IsFireButtonDown = playerInput.IsFiring;
-
     }
 
     private void FixedUpdate()
@@ -76,7 +73,7 @@ public class PlayerManager : MonoBehaviour
         }
 
         // get the keyboard input converted to camera space
-        Vector3 input = playerInput.GetCameraSpaceInputDirection(sceneCamera);
+        Vector3 input = playerInput.GetInputDirection();
 
         // use input to move the player
         playerMover.MovePlayer(input);

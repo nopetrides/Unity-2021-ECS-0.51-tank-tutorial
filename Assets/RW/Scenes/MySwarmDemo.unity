@@ -1767,12 +1767,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b462390ab85b2574e9b73d0ef914bf88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCount: 100
+  spawnCount: 1000
   spawnInterval: 2
   spawnRadius: 50
   difficultyBonus: 1
-  minSpeed: 4
-  maxSpeed: 5
+  minSpeed: 1
+  maxSpeed: 1
   enemyPrefab: {fileID: 8672307886139396931, guid: 6ae55f07e32ac7346afdfbfd130044b9,
     type: 3}
 --- !u!1 &2105232528
